@@ -1,6 +1,6 @@
-const Hapi = require('@hapi/hapi');
+import * as Hapi from '@hapi/hapi';
 // const { sequelize, User } = require('./models');
-const db = require('./db')
+import { pool } from './db';
 
 const init = async () => {
 
@@ -13,7 +13,7 @@ const init = async () => {
         method: 'GET',
         path: '/{id}',
         handler: async (request, h) => {
-            let getname = await db.query('SELECT name FROM "user" WHERE id = $1', [request.params.id]);
+            let getname = await pool.query('SELECT name FROM "user" WHERE id = $1', [request.params.id]);
             return `Hello ${getname.rows[0].name}!`;
         }
     });
