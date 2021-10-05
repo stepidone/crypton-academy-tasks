@@ -1,6 +1,6 @@
 import * as Hapi from '@hapi/hapi';
-// const { sequelize, User } = require('./models');
-import { pool } from './db';
+// import { pool } from './db';
+import db from './models';
 
 const init = async () => {
 
@@ -10,16 +10,21 @@ const init = async () => {
     });
 
     server.route({
-        method: 'GET',
-        path: '/{id}',
+        method: 'POST',
+        path: '/users',
         handler: async (request, h) => {
-            let getname = await pool.query('SELECT name FROM "user" WHERE id = $1', [request.params.id]);
-            return `Hello ${getname.rows[0].name}!`;
+            let user = request.payload
+            try {
+                const userAdd = await db.User.create(user);
+                return userAdd;
+            } catch(error) {
+                console.log(error);
+            };
         }
     });
 
     await server.start();
-    // await sequelize.authenticate();
+    await db.sequelize.sync({ force: true });
     console.log('Server running on %s', server.info.uri);
 };
 
