@@ -68,11 +68,17 @@ const init = async () => {
         method: 'GET',
         path: '/users/{id}',
         handler: async  (request, h) => {
-            return db.User.findOne({
+            const userid = await db.User.findOne({
                 where: {
                     id: request.params.id
                 }
             });
+
+            if (userid === null) {
+                return 'not found';
+            } else {
+                return userid;
+            }
         }
     })
 
@@ -81,11 +87,20 @@ const init = async () => {
         path: '/users/{id}',
         handler: async  (request, h) => {
             const payload = request.payload;
-            return db.User.update(payload, {
+            const updateuser = await db.User.update(payload, {
                 where: {
                     id: request.params.id
                 }
             });
+            if (updateuser === null) {
+                return 'not found';
+            } else {
+                return db.User.findOne({
+                    where: {
+                        id: request.params.id
+                    }
+                });
+            }
         }
     })
 

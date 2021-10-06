@@ -49,19 +49,27 @@ module.exports = (sequelize: any, DataTypes: any) => {
     },
     sex: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
+      validate: {
+          customValidator(value: any) {
+            if (typeof value !== 'boolean')
+            throw new Error('sex must be true(male) or false(female)')
+          }
+      }
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     faculty: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     averageGrade: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      validate: {
+        isFloat: true
+      }
     }
   }, {
     sequelize,
