@@ -76,21 +76,18 @@ const init = async () => {
         }
     })
 
-    // server.route({
-    //     method: 'PUT',
-    //     path: '/users/{id}',
-    //     handler: async  (request, h) => {
-    //         const payload = request.payload;
-    //         const userChange = await db.User.findOne({
-    //             where: {
-    //                 faculty: request.params.id
-    //             }
-    //         });
-    //         payload.firstName
-    //         // await userChange.save();
-    //         return userChange;
-    //     }
-    // })
+    server.route({
+        method: 'PUT',
+        path: '/users/{id}',
+        handler: async  (request, h) => {
+            const payload = request.payload;
+            return db.User.update(payload, {
+                where: {
+                    id: request.params.id
+                }
+            });
+        }
+    })
 
     await server.start();
     await db.sequelize.authenticate({ force: true });
