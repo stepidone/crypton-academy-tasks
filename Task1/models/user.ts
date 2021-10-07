@@ -9,27 +9,22 @@ interface UserAttributes {
   lastName: string;
   sex: boolean;
   phone: string;
-  faculty: string;
   averageGrade: Number
+  // faculty_id: Number
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
   class user extends Model<UserAttributes> 
   implements UserAttributes{
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     id!: string
     firstName!: string
     lastName!: string
     sex!: boolean
     phone!: string
-    faculty!: string
     averageGrade!: Number
+    // faculty_id!: Number
     static associate(models: any) {
-      // define association here
+
     }
   };
   user.init({
@@ -61,16 +56,20 @@ module.exports = (sequelize: any, DataTypes: any) => {
       type: DataTypes.STRING,
       allowNull: true
     },
-    faculty: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
     averageGrade: {
       type: DataTypes.FLOAT,
       validate: {
         isFloat: true
       }
-    }
+    },
+    // faculty_id: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    //   references: {
+    //     model: 'Faculty',
+    //     key: 'id'
+    //   }
+    // }
   }, {
     sequelize,
     tableName: 'Users',

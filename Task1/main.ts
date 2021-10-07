@@ -12,6 +12,20 @@ const init = async () => {
 
     server.route({
         method: 'POST',
+        path: '/faculty',
+        handler: async (request, h) => {
+            let faculty = request.payload
+            try {
+                const facultyAdd = await db.Faculty.create(faculty);
+                return facultyAdd;
+            } catch(error) {
+                console.log(error);
+            };
+        }
+    });
+
+    server.route({
+        method: 'POST',
         path: '/users',
         handler: async (request, h) => {
             let user = request.payload
@@ -26,11 +40,21 @@ const init = async () => {
 
     server.route({
         method: 'GET',
+        path: '/faculty',
+        handler: async  (request, h) => {
+            return db.Faculty.findAll({
+                attributes: ['id', 'name']
+            });
+        }
+    });
+
+    server.route({
+        method: 'GET',
         path: '/users',
         handler: async  (request, h) => {
             return db.User.findAll({
                 order: [['averageGrade', 'DESC']],
-                attributes: ['id', 'firstName', 'lastName', 'sex', 'faculty', 'averageGrade']
+                attributes: ['id', 'firstName', 'lastName', 'sex', 'averageGrade', 'faculty_id']
             });
         }
     });
@@ -41,7 +65,7 @@ const init = async () => {
         handler: async  (request, h) => {
             return db.User.findAll({
                 where: {
-                    faculty: request.params.faculty
+                    faculty_id: request.params.faculty
                 },
                 attributes: [[Sequelize.fn('avg', Sequelize.col('averageGrade')), 'averageFacultyGrade']]
             });
@@ -54,7 +78,7 @@ const init = async () => {
         handler: async  (request, h) => {
             return db.User.findAll({
                 where: {
-                    faculty: request.params.faculty
+                    faculty_id: request.params.faculty
                 },
                 attributes: [
                     [Sequelize.fn('min', Sequelize.col('averageGrade')), 'minFaculty'],
@@ -104,8 +128,22 @@ const init = async () => {
         }
     })
 
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: async  (request, h) => {
+            return db.User.findAll({
+                where: {
+                    faculty_id: request.query.faculty,
+                    sex: request.query.sex
+                },
+                attributes: ['id', 'firstName', 'lastName', 'sex', 'averageGrade', 'faculty_id']
+            });
+        }
+    })
+
     await server.start();
-    await db.sequelize.authenticate({ force: true });
+    await db.sequelize.sync();
     console.log('Server running on %s', server.info.uri);
 };
 
