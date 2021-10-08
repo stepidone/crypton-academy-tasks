@@ -133,11 +133,17 @@ const init = async () => {
         path: '/',
         handler: async  (request, h) => {
             return db.User.findAll({
+                include: {
+                    model: db.Faculty,
+                    attributes: ['name'],
+                    where: {
+                        'name': request.query.faculty,
+                    }
+                },
                 where: {
-                    faculty_id: request.query.faculty,
                     sex: request.query.sex
                 },
-                attributes: ['id', 'firstName', 'lastName', 'sex', 'averageGrade', 'faculty_id']
+                attributes: ['id', 'firstName', 'lastName', 'sex', 'averageGrade']
             });
         }
     })

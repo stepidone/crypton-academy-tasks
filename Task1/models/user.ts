@@ -24,7 +24,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
     averageGrade!: Number
     // faculty_id!: Number
     static associate(models: any) {
-
+      user.belongsTo(models.Faculty, {
+        foreignKey: 'faculty_id'
+      })
     }
   };
   user.init({
